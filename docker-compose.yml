@@ -1,0 +1,63 @@
+#
+# Ci-dessous la config qui permet de lancer selfsudoc
+#
+# Remarque: avant de lancer docker-compose up, il faut régler le fichier .env
+# en partant du fichier .env-dist qui donne les variables d'environnements
+# à personnaliser et des exemples de valeurs.
+#
+
+services:
+  ############################
+  # selfsudoc-batch-technic-render
+  # Batchs Technic et Render de selfsudoc
+  selfsudoc-batch-technic-render:
+    image: abesesr/selfsudoc:${SELFSUDOC_BATCH_VERSION}
+    container_name: selfsudoc-batch-technic-render
+    restart: unless-stopped
+    mem_limit: ${MEM_LIMIT}
+    environment:
+      JAVA_OPTIONS: ${SELFSUDOC_BATCH_TECHNIC_RENDER_JAVA_OPTIONS}
+      CLASS_MAIN: fr.abes.derives.cli.Chain
+      ARG_MAIN: "extracted cleaned grouped filtered sorted xhtml rtf pdf slk"
+      EOD_HOME: /data
+    volumes:
+      - ${SELFSUDOC_BATCH_TECHNIC_RENDER_PATH_LIBS_EXT}:/lib/ext
+      - ${SELFSUDOC_BATCH_TECHNIC_RENDER_PATH_DOCBASE}:/data/docBase
+      - ${SELFSUDOC_BATCH_TECHNIC_RENDER_PATH_CONF}:/data/conf
+    labels:
+      # pour envoyer les logs dans le puits de log de l'abes
+      - "co.elastic.logs/enabled=true"
+      - "co.elastic.logs/processors.add_fields.target="
+      - "co.elastic.logs/processors.add_fields.fields.abes_appli=selfsudoc-batch-technic-render"
+      - "co.elastic.logs/processors.add_fields.fields.abes_middleware=java"
+      # pour que les mises à jour de cette image soient auto-déployées par watchtower
+      - "com.centurylinklabs.watchtower.scope=selfsudoc-watchtower-scope"
+
+
+  #######################################
+  # selfsudoc-watchtower
+  # Conteneur chargé de mettre à jour automatiquement toutes les N secondes
+  # les images docker des conteneurs surveillés (via le système de label/scope de watchtower)
+  # plus d'info : https://containrrr.dev/watchtower
+  # cf README.md pour explications : https://github.com/abes-esr/selfsudoc-docker#d%C3%A9ploiement-continu
+  selfsudoc-watchtower:
+    image: containrrr/watchtower:1.4.0
+    container_name: selfsudoc-watchtower
+    restart: unless-stopped
+    mem_limit: ${MEM_LIMIT}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_POLL_INTERVAL: 60
+      WATCHTOWER_DEBUG: "false"
+      WATCHTOWER_NO_STARTUP_MESSAGE: "true"
+      WATCHTOWER_WARN_ON_HEAD_FAILURE: "never"
+      WATCHTOWER_RUN_ONCE: ${SELFSUDOC_WATCHTOWER_RUN_ONCE}
+      WATCHTOWER_NOTIFICATIONS: "slack"
+      WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL: ${SELFSUDOC_WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL}
+      WATCHTOWER_NOTIFICATION_SLACK_IDENTIFIER: ${SELFSUDOC_WATCHTOWER_NOTIFICATION_SLACK_IDENTIFIER}
+      WATCHTOWER_NOTIFICATION_SLACK_CHANNEL: "#notif-selfsudoc"
+      WATCHTOWER_SCOPE: "selfsudoc-watchtower-scope"
+    labels:
+      - "com.centurylinklabs.watchtower.scope=selfsudoc-watchtower-scope"
