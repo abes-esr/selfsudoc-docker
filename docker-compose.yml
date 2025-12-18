@@ -21,14 +21,40 @@ services:
       ARG_MAIN: "extracted cleaned grouped filtered sorted xhtml rtf pdf slk"
       EOD_HOME: /data
     volumes:
-      - ${SELFSUDOC_BATCH_TECHNIC_RENDER_PATH_LIBS_EXT}:/lib/ext
-      - ${SELFSUDOC_BATCH_TECHNIC_RENDER_PATH_DOCBASE}:/data/docBase
-      - ${SELFSUDOC_BATCH_TECHNIC_RENDER_PATH_CONF}:/data/conf
+      - ${SELFSUDOC_BATCH_PATH_LIBS_EXT}:/lib/ext
+      - ${SELFSUDOC_BATCH_PATH_DOCBASE}:/data/docBase
+      - ${SELFSUDOC_BATCH_PATH_CONF}:/data/conf
     labels:
       # pour envoyer les logs dans le puits de log de l'abes
       - "co.elastic.logs/enabled=true"
       - "co.elastic.logs/processors.add_fields.target="
       - "co.elastic.logs/processors.add_fields.fields.abes_appli=selfsudoc-batch-technic-render"
+      - "co.elastic.logs/processors.add_fields.fields.abes_middleware=java"
+      # pour que les mises à jour de cette image soient auto-déployées par watchtower
+      - "com.centurylinklabs.watchtower.scope=selfsudoc-watchtower-scope"
+
+  ############################
+  # selfsudoc-batch-extract
+  # Batchs Extract de selfsudoc
+  selfsudoc-batch-extract:
+    image: abesesr/selfsudoc:${SELFSUDOC_BATCH_VERSION}
+    container_name: selfsudoc-batch-extract
+    restart: unless-stopped
+    mem_limit: ${MEM_LIMIT}
+    environment:
+      JAVA_OPTIONS: ${SELFSUDOC_BATCH_EXTRACT_JAVA_OPTIONS}
+      CLASS_MAIN: fr.abes.derives.extract.Extract
+      ARG_MAIN: "extracted"
+      EOD_HOME: /data
+    volumes:
+      - ${SELFSUDOC_BATCH_PATH_LIBS_EXT}:/lib/ext
+      - ${SELFSUDOC_BATCH_PATH_DOCBASE}:/data/docBase
+      - ${SELFSUDOC_BATCH_PATH_CONF}:/data/conf
+    labels:
+      # pour envoyer les logs dans le puits de log de l'abes
+      - "co.elastic.logs/enabled=true"
+      - "co.elastic.logs/processors.add_fields.target="
+      - "co.elastic.logs/processors.add_fields.fields.abes_appli=selfsudoc-batch-extract"
       - "co.elastic.logs/processors.add_fields.fields.abes_middleware=java"
       # pour que les mises à jour de cette image soient auto-déployées par watchtower
       - "com.centurylinklabs.watchtower.scope=selfsudoc-watchtower-scope"
