@@ -59,6 +59,27 @@ services:
       # pour que les mises à jour de cette image soient auto-déployées par watchtower
       - "com.centurylinklabs.watchtower.scope=selfsudoc-watchtower-scope"
 
+  ############################
+  # selfsudoc-web-front
+  # Web front de selfsudoc
+  selfsudoc-web-front:
+    image: abesesr/selfsudoc:${SELFSUDOC_WEB_VERSION}
+    container_name: selfsudoc-web-front
+    restart: unless-stopped
+    mem_limit: ${MEM_LIMIT}
+    volumes:
+      - ${SELFSUDOC_WEB_PATH_CONTEXT}:/usr/local/tomcat/conf/Catalina/localhost/SelfSudoc.xml
+    ports:
+      - ${SELFSUDOC_WEB_PORT}:8080
+    labels:
+      # pour envoyer les logs dans le puits de log de l'abes
+      - "co.elastic.logs/enabled=true"
+      - "co.elastic.logs/processors.add_fields.target="
+      - "co.elastic.logs/processors.add_fields.fields.abes_appli=selfsudoc-web-front"
+      - "co.elastic.logs/processors.add_fields.fields.abes_middleware=java"
+      # pour que les mises à jour de cette image soient auto-déployées par watchtower
+      - "com.centurylinklabs.watchtower.scope=selfsudoc-watchtower-scope"
+
 
   #######################################
   # selfsudoc-watchtower
