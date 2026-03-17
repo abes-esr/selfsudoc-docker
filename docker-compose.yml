@@ -32,6 +32,7 @@ services:
       - "co.elastic.logs/processors.add_fields.fields.abes_middleware=java"
       # pour que les mises à jour de cette image soient auto-déployées par wud
       - "wud.watch=true"
+      - "wud.watch.digest=true"
 
   ############################
   # selfsudoc-batch-extract
@@ -58,6 +59,7 @@ services:
       - "co.elastic.logs/processors.add_fields.fields.abes_middleware=java"
       # pour que les mises à jour de cette image soient auto-déployées par wud
       - "wud.watch=true"
+      - "wud.watch.digest=true"
 
   ############################
   # selfsudoc-web-front
@@ -82,4 +84,5 @@ services:
       - "co.elastic.logs/processors.add_fields.fields.abes_middleware=java"
       # pour que les mises à jour de cette image soient auto-déployées par wud
       - "wud.watch=true"
+      - "wud.watch.digest=true"
 
