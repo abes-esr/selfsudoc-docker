@@ -68,8 +68,8 @@ services:
     restart: unless-stopped
     mem_limit: ${MEM_LIMIT}
     volumes:
-      - ${SELFSUDOC_WEB_PATH_CONTEXT_MAIN}:/usr/local/tomcat/conf/Catalina/localhost/SelfSudoc.xml
-      - ${SELFSUDOC_WEB_PATH_CONTEXT_FILEDOWNLOAD}:/usr/local/tomcat/conf/Catalina/localhost/exportsdemandes.xml
+      - ${SELFSUDOC_WEB_PATH_CONTEXT}:/usr/local/tomcat/conf/Catalina/localhost/ROOT.xml:ro
+      - ${SELFSUDOC_WEB_PATH_SERVER}:/usr/local/tomcat/conf/server.xml
       - ${SELFSUDOC_BATCH_PATH_LIBS_EXT}:/usr/local/tomcat/lib/ext
       - ${SELFSUDOC_BATCH_PATH_DOCBASE}:/data/docBase
     ports:
