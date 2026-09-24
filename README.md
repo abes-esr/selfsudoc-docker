@@ -12,7 +12,7 @@ Disposer de :
 
 - se connecter avec le compte oracle sur ononis (machine Oracle) :
 
-- Récupérer la sauvegarde depuis sotora :
+- Récupérer la sauvegarde depuis socorro :
 ```bash
 rsync --progress -av devel@socorro.v104.abes.fr:/backup_pool/ononis-prod-dumps/daily.0/racine/backup-sql/ABES/PRODUITSDERIVES/dumpPRODUITS_DERIVES.dmp /backup-sql/ABES/PRODUITSDERIVES/dump.dmp
 ```
