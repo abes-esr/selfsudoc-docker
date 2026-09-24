@@ -25,8 +25,14 @@ export NLS_LANG=AMERICAN_AMERICA.UTF8
 export ORACLE_SID='ABES'
 setsid impdp \'/ as sysdba\' SCHEMAS=PRODUITS_DERIVES TABLE_EXISTS_ACTION=REPLACE dumpfile='dump.dmp' logfile=importProduitsDerives.log directory=DPDUMP_PRODUITSDERIVES
 ```
-Si le directory object n'existe pas dans la base de données, il doit être ajouté via :
+Si le directory object n'existe pas dans la base de données : 
+```bash
+ORA-39002: invalid operation
+ORA-39070: Unable to open the log file.
+ORA-39087: directory name DPDUMP_PRODUITSDERIVES is invalid
+```
+Il doit être ajouté via :
 ```bash
 CREATE DIRECTORY DPDUMP_PRODUITSDERIVES AS '/backup-sql/ABES/PRODUITSDERIVES';
 ```
-_Procédure executée avec succès sur le test le 08/12/2025_
+
