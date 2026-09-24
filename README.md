@@ -35,4 +35,4 @@ Il doit être ajouté via :
 ```bash
 CREATE DIRECTORY DPDUMP_PRODUITSDERIVES AS '/backup-sql/ABES/PRODUITSDERIVES';
 ```
-
+_Procédure executée avec succès le 24/09/2026_
